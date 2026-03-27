@@ -2,8 +2,6 @@ package core;
 
 import utils.LocalizationManager;
 
-import java.util.List;
-
 public class PlanetInfo {
     private final String name;
     private final double radius;
@@ -28,15 +26,20 @@ public class PlanetInfo {
     // 返回格式化的行星信息，使用资源文件中的本地化文本
     public String getFormattedInfo() {
         return localizationManager.getString("planet_name") + ": " + name + "\n" +
-                localizationManager.getString("radius") + ": " + radius + " " +
-                localizationManager.getString("unit_kilometers") + "\n" +
-                localizationManager.getString("mass") + ": " + mass + " " +
-                localizationManager.getString("unit_kilograms") + "\n" +
-                localizationManager.getString("orbital_period") + ": " + orbitalPeriod + " " +
-                localizationManager.getString("unit_days") + "\n" +
-                localizationManager.getString("surface_temperature") + ": " + surfaceTemperature + " " +
-                localizationManager.getString("unit_celsius") + "\n" +
-                localizationManager.getString("distance_from_sun") + ": " + distanceFromSun + " " +
-                localizationManager.getString("unit_million_kilometers") + "\n";
+                formatMeasurement("radius", radius, "unit_kilometers") +
+                formatMeasurement("mass", mass, "unit_kilograms") +
+                formatMeasurement("orbital_period", orbitalPeriod, "unit_days") +
+                formatMeasurement("surface_temperature", surfaceTemperature, "unit_celsius") +
+                formatMeasurement("distance_from_sun", distanceFromSun, "unit_million_kilometers");
+    }
+
+    private String formatMeasurement(String labelKey, double value, String unitKey) {
+        if (!Double.isFinite(value)) {
+            return localizationManager.getString(labelKey) + ": " +
+                    localizationManager.getString("unknown") + "\n";
+        }
+
+        return localizationManager.getString(labelKey) + ": " + value + " " +
+                localizationManager.getString(unitKey) + "\n";
     }
 }
