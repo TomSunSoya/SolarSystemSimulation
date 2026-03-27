@@ -4,23 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build and Run
 
-This is a pure Java Swing desktop application with no external dependencies. The project now includes a Gradle build file and wrapper, but the zero-setup path is still direct `javac`/`java`. Java 17+ is required.
+This is a pure Java Swing desktop application with no external dependencies. It is built and run directly with `javac` and `java`. Java 17+ is required.
 
 ```bash
 # Compile
 javac -d out -sourcepath src src/Main.java
 
-# Copy resource bundles for direct classpath runs
-xcopy /E /I /Y src\assets out\assets
-
 # Run
-java -cp out Main
-```
-
-If you prefer Gradle, use the checked-in wrapper:
-
-```bash
-.\gradlew.bat run
+java -cp "out;src" Main
 ```
 
 No test framework is configured.
