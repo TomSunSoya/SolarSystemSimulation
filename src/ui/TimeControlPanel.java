@@ -45,7 +45,7 @@ public class TimeControlPanel extends JPanel {
         });
 
         languageLabel = new JLabel(localizationManager.getString("language"));
-        JComboBox<String> languageCombo = new JComboBox<>(new String[]{"English", "中文"});
+        JComboBox<String> languageCombo = new JComboBox<>(new String[]{"English", "\u4E2D\u6587"});
         languageCombo.addActionListener(e -> {
             if (languageCombo.getSelectedIndex() == 1) {
                 localeChangeCallback.accept(Locale.SIMPLIFIED_CHINESE);

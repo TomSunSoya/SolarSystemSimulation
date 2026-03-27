@@ -3,6 +3,8 @@ package core;
 import java.awt.*;
 
 public class Planet {
+    private static final double FULL_ROTATION = Math.PI * 2;
+
     private String name;
     private double orbitRadius;
     private double orbitSpeed;
@@ -17,7 +19,8 @@ public class Planet {
     private final double distanceFromSun;
 
     public Planet(String name, double orbitRadius, double orbitSpeed, double radius, Color color) {
-        this(name, orbitRadius, orbitSpeed, radius, color, 0, 0, 0, 0, 0);
+        this(name, orbitRadius, orbitSpeed, radius, color,
+                Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
     }
 
     public Planet(String name, double orbitRadius, double orbitSpeed, double radius, Color color,
@@ -38,6 +41,10 @@ public class Planet {
 
     public void updatePosition(double elapsedTime) {
         angle += orbitSpeed * elapsedTime;
+        angle %= FULL_ROTATION;
+        if (angle < 0) {
+            angle += FULL_ROTATION;
+        }
     }
 
     public void render(Graphics2D g2d, int x, int y) {

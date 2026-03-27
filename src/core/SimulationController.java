@@ -3,18 +3,22 @@ package core;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimulationController {
-    private SolarSystem solarSystem;
-    private TimeController timeController;
+    private final SolarSystem solarSystem;
+    private final TimeController timeController;
+    private final Timer timer;
+    private final List<Runnable> tickListeners;
     private boolean isRunning;
-    private Timer timer;
     private static final int DEFAULT_DELAY = 16;
 
     public SimulationController(SolarSystem solarSystem, TimeController timeController) {
         this.solarSystem = solarSystem;
         this.timeController = timeController;
         this.isRunning = false;
+        this.tickListeners = new ArrayList<>();
 
         timer = new Timer(DEFAULT_DELAY, new ActionListener() {
             @Override
@@ -42,6 +46,9 @@ public class SimulationController {
     public void update(double elapsedTime) {
         double timeSpeed = timeController.getTimeSpeed();
         solarSystem.update(elapsedTime * timeSpeed);
+        for (Runnable tickListener : tickListeners) {
+            tickListener.run();
+        }
     }
 
     public boolean isRunning() {
@@ -54,5 +61,9 @@ public class SimulationController {
 
     public double getTimeSpeed() {
         return timeController.getTimeSpeed();
+    }
+
+    public void addTickListener(Runnable tickListener) {
+        tickListeners.add(tickListener);
     }
 }

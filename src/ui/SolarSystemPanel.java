@@ -19,9 +19,6 @@ public class SolarSystemPanel extends JPanel {
 
         setBackground(Color.BLACK);
 
-        Timer repaintTimer = new Timer(16, e -> repaint());
-        repaintTimer.start();
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

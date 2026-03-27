@@ -25,6 +25,7 @@ public class MainFrame extends JFrame {
 
         infoPanel = new InfoPanel(localizationManager);
         solarSystemPanel = new SolarSystemPanel(solarSystem, this::onPlanetSelected);
+        simulationController.addTickListener(solarSystemPanel::repaint);
         timeControlPanel = new TimeControlPanel(simulationController, localizationManager, this::onLocaleChanged);
 
         add(solarSystemPanel, BorderLayout.CENTER);
