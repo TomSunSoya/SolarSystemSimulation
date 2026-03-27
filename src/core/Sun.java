@@ -3,18 +3,27 @@ package core;
 import java.awt.*;
 
 public class Sun {
-    public static final double SUN_RADIUS = 696300;
+    public static final double RADIUS_KILOMETERS = 696340;
 
-    private double radius;
-    private Color color;
+    private final double radius;
+    private final Color coreColor;
+    private final Color glowColor;
 
     public Sun() {
-        this.radius = SUN_RADIUS;
-        this.color = Color.YELLOW;
+        this.radius = RADIUS_KILOMETERS;
+        this.coreColor = new Color(255, 214, 102);
+        this.glowColor = new Color(255, 168, 53);
     }
 
-    public void render(Graphics2D g2d, int x, int y) {
-        g2d.setColor(color);
-        g2d.fillOval(x - (int) radius, y - (int) radius, (int) radius * 2, (int) radius * 2);
+    public double getRadius() {
+        return radius;
+    }
+
+    public Color getCoreColor() {
+        return coreColor;
+    }
+
+    public Color getGlowColor() {
+        return glowColor;
     }
 }

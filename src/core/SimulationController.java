@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationController {
+    private static final int DEFAULT_DELAY = 16;
+
     private final SolarSystem solarSystem;
     private final TimeController timeController;
     private final Timer timer;
     private final List<Runnable> tickListeners;
     private boolean isRunning;
-    private static final int DEFAULT_DELAY = 16;
 
     public SimulationController(SolarSystem solarSystem, TimeController timeController) {
         this.solarSystem = solarSystem;
@@ -23,8 +24,9 @@ public class SimulationController {
         timer = new Timer(DEFAULT_DELAY, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isRunning)
+                if (isRunning) {
                     update((double) DEFAULT_DELAY / 1000);
+                }
             }
         });
     }
@@ -44,8 +46,8 @@ public class SimulationController {
     }
 
     public void update(double elapsedTime) {
-        double timeSpeed = timeController.getTimeSpeed();
-        solarSystem.update(elapsedTime * timeSpeed);
+        double simulatedDays = timeController.advance(elapsedTime);
+        solarSystem.update(simulatedDays);
         for (Runnable tickListener : tickListeners) {
             tickListener.run();
         }
@@ -61,6 +63,26 @@ public class SimulationController {
 
     public double getTimeSpeed() {
         return timeController.getTimeSpeed();
+    }
+
+    public double getElapsedSimulationDays() {
+        return timeController.getElapsedTime();
+    }
+
+    public double getElapsedSimulationYears() {
+        return timeController.getElapsedYears();
+    }
+
+    public void toggleSimulation() {
+        if (isRunning) {
+            pauseSimulation();
+        } else {
+            startSimulation();
+        }
+    }
+
+    public void multiplyTimeSpeed(double factor) {
+        setTimeSpeed(getTimeSpeed() * factor);
     }
 
     public void addTickListener(Runnable tickListener) {

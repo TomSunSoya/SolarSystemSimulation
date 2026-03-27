@@ -1,6 +1,6 @@
 package utils;
 
-public class Pair<K, V> implements Comparable<Pair<K, V>> {
+public class Pair<K extends Comparable<? super K>, V> implements Comparable<Pair<K, V>> {
     private K key;
     private V value;
 
@@ -32,9 +32,6 @@ public class Pair<K, V> implements Comparable<Pair<K, V>> {
 
     @Override
     public int compareTo(Pair<K, V> o) {
-        if (key instanceof Comparable) {
-            return ((Comparable<K>) key).compareTo(o.getKey());
-        }
-        return 0;
+        return key.compareTo(o.getKey());
     }
 }

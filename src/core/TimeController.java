@@ -1,30 +1,26 @@
 package core;
 
 public class TimeController {
-    private double elapsedTime;
-    private double timeScale;
+    private double elapsedSimulationDays;
     private double timeSpeed;
 
     public TimeController() {
-        this.elapsedTime = 0;
-        this.timeScale = 1;
-        this.timeSpeed = 1;
+        this.elapsedSimulationDays = 0;
+        this.timeSpeed = 30;
     }
 
-    public void update(double elapsedTime) {
-        this.elapsedTime += elapsedTime * timeScale;
+    public double advance(double elapsedRealSeconds) {
+        double simulatedDays = elapsedRealSeconds * timeSpeed;
+        elapsedSimulationDays += simulatedDays;
+        return simulatedDays;
     }
 
     public double getElapsedTime() {
-        return elapsedTime;
+        return elapsedSimulationDays;
     }
 
-    public void setTimeScale(double timeScale) {
-        this.timeScale = timeScale;
-    }
-
-    public double getTimeScale() {
-        return timeScale;
+    public double getElapsedYears() {
+        return elapsedSimulationDays / 365.25;
     }
 
     public double getTimeSpeed() {
@@ -32,6 +28,6 @@ public class TimeController {
     }
 
     public void setTimeSpeed(double timeSpeed) {
-        this.timeSpeed = timeSpeed;
+        this.timeSpeed = Math.max(0.5, Math.min(timeSpeed, 720));
     }
 }

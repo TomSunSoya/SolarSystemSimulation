@@ -23,6 +23,7 @@ public class InfoPanel extends JPanel {
         infoArea.setLineWrap(true);
         infoArea.setWrapStyleWord(true);
         infoArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+        infoArea.setBackground(new Color(247, 244, 238));
         infoArea.setText(localizationManager.getString("select_planet_prompt"));
 
         add(new JScrollPane(infoArea), BorderLayout.CENTER);
@@ -30,24 +31,22 @@ public class InfoPanel extends JPanel {
 
     public void showPlanet(Planet planet) {
         currentPlanet = planet;
-        PlanetInfo planetInfo = new PlanetInfo(
-                planet.getDistanceFromSun(),
-                planet.getName(),
-                planet.getPhysicalRadius(),
-                planet.getMass(),
-                planet.getOrbitalPeriod(),
-                planet.getSurfaceTemperature(),
-                localizationManager
-        );
+        refreshCurrentPlanet();
+    }
+
+    public void refreshCurrentPlanet() {
+        if (currentPlanet == null) {
+            infoArea.setText(localizationManager.getString("select_planet_prompt"));
+            return;
+        }
+
+        PlanetInfo planetInfo = new PlanetInfo(currentPlanet, localizationManager);
         infoArea.setText(planetInfo.getFormattedInfo());
+        infoArea.setCaretPosition(0);
     }
 
     public void refreshTexts() {
         setBorder(BorderFactory.createTitledBorder(localizationManager.getString("planet_info")));
-        if (currentPlanet == null) {
-            infoArea.setText(localizationManager.getString("select_planet_prompt"));
-        } else {
-            showPlanet(currentPlanet);
-        }
+        refreshCurrentPlanet();
     }
 }

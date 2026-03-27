@@ -2,44 +2,54 @@ package core;
 
 import utils.LocalizationManager;
 
-public class PlanetInfo {
-    private final String name;
-    private final double radius;
-    private final double mass;
-    private final double orbitalPeriod;
-    private final double surfaceTemperature;
-    private final double distanceFromSun;
+import java.text.NumberFormat;
 
+public class PlanetInfo {
+    private final Planet planet;
     private final LocalizationManager localizationManager;
 
-    public PlanetInfo(double distanceFromSun, String name, double radius, double mass, double orbitalPeriod,
-                      double surfaceTemperature, LocalizationManager localizationManager) {
-        this.distanceFromSun = distanceFromSun;
-        this.name = name;
-        this.radius = radius;
-        this.mass = mass;
-        this.orbitalPeriod = orbitalPeriod;
-        this.surfaceTemperature = surfaceTemperature;
+    public PlanetInfo(Planet planet, LocalizationManager localizationManager) {
+        this.planet = planet;
         this.localizationManager = localizationManager;
     }
 
-    // 返回格式化的行星信息，使用资源文件中的本地化文本
     public String getFormattedInfo() {
-        return localizationManager.getString("planet_name") + ": " + name + "\n" +
-                formatMeasurement("radius", radius, "unit_kilometers") +
-                formatMeasurement("mass", mass, "unit_kilograms") +
-                formatMeasurement("orbital_period", orbitalPeriod, "unit_days") +
-                formatMeasurement("surface_temperature", surfaceTemperature, "unit_celsius") +
-                formatMeasurement("distance_from_sun", distanceFromSun, "unit_million_kilometers");
+        return localizationManager.getString("planet_name") + ": " + planet.getLocalizedName(localizationManager) + "\n" +
+                formatMeasurement("radius", planet.getPhysicalRadius(), "unit_kilometers", 1) +
+                formatScientific("mass", planet.getMass()) +
+                formatMeasurement("orbital_period", planet.getOrbitalPeriod(), "unit_days", 1) +
+                formatMeasurement("surface_temperature", planet.getSurfaceTemperature(), "unit_celsius", 0) +
+                formatMeasurement("semi_major_axis", planet.getSemiMajorAxis(), "unit_million_kilometers", 1) +
+                formatMeasurement("eccentricity", planet.getEccentricity(), null, 3) +
+                formatMeasurement("current_distance", planet.getCurrentDistanceFromSun(), "unit_million_kilometers", 2) +
+                formatMeasurement("current_speed", planet.getCurrentSpeedKilometersPerSecond(), "unit_km_per_second", 2) +
+                formatMeasurement("current_angle", planet.getCurrentOrbitalAngleDegrees(), "unit_degrees", 1);
     }
 
-    private String formatMeasurement(String labelKey, double value, String unitKey) {
+    private String formatScientific(String labelKey, double value) {
         if (!Double.isFinite(value)) {
             return localizationManager.getString(labelKey) + ": " +
                     localizationManager.getString("unknown") + "\n";
         }
 
-        return localizationManager.getString(labelKey) + ": " + value + " " +
-                localizationManager.getString(unitKey) + "\n";
+        return localizationManager.getString(labelKey) + ": " + String.format(localizationManager.getLocale(), "%.3e", value) + " " +
+                localizationManager.getString("unit_kilograms") + "\n";
+    }
+
+    private String formatMeasurement(String labelKey, double value, String unitKey, int decimals) {
+        if (!Double.isFinite(value)) {
+            return localizationManager.getString(labelKey) + ": " +
+                    localizationManager.getString("unknown") + "\n";
+        }
+
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(localizationManager.getLocale());
+        numberFormat.setMaximumFractionDigits(decimals);
+        numberFormat.setMinimumFractionDigits(decimals == 0 ? 0 : Math.min(1, decimals));
+
+        String line = localizationManager.getString(labelKey) + ": " + numberFormat.format(value);
+        if (unitKey != null) {
+            line += " " + localizationManager.getString(unitKey);
+        }
+        return line + "\n";
     }
 }
